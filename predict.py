@@ -18,11 +18,16 @@ def predict(path_to_model: str, path_to_features: str, path_to_labels: Optional[
 
   if path_to_labels is not None:
     labels=pd.read_csv(path_to_labels)
+    series = labels['Label'].value_counts()
+    for label, count in series.items():
+        print(f"Number of rows labeled as '{label}': {count}")
+
     print('\nPrediction Metrics:')
     print(f'Accuracy: {round(accuracy_score(labels, predictions), 4)}')
-    print(f'F1 Score: {round(f1_score(labels, predictions), 4)}')
-    print(f'Precision: {round(precision_score(labels, predictions), 4)}')
-    print(f'Recall: {round(recall_score(labels, predictions), 4)}')
+    print(f'F1 Score: {round(f1_score(labels, predictions, average="weighted", zero_division=1), 4)}')
+    print(f'Precision: {round(precision_score(labels, predictions, average="weighted", zero_division=1), 4)}')
+    print(f'Recall: {round(recall_score(labels, predictions, average="weighted"), 4)}')
+
 
 def main():
   # Parse command-line arguments

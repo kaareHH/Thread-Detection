@@ -9,20 +9,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
 def train_model(X_train, y_train):
-    rf_model = RandomForestClassifier(n_estimators=50, random_state=42)
+    rf_model = RandomForestClassifier(n_estimators=50, random_state=42, warm_start=True)
     rf_model.fit(X_train, y_train)
     
     return rf_model
 
 
-def continue_training(X_train, y_train, folder_path, existing_model):
-    rf_model = joblib.load(os.path.join(folder_path, existing_model))
-    rf_model.fit(X_train, y_train)
-    
-    return rf_model
-
-
-def run(input_file: str, output_dir: str, show_plot: bool, existing_model: Optional[str]):
+def run(input_file: str, output_dir: str, show_plot: bool):
   folder_path = os.path.join(os.getcwd(), output_dir)
 
   if not os.path.exists(folder_path):
@@ -32,32 +25,42 @@ def run(input_file: str, output_dir: str, show_plot: bool, existing_model: Optio
 
   # Map labels to numeric values
   # Get unique labels
-  unique_labels = df['Label'].unique()
+  #unique_labels = df['Label'].unique()
 
   # Map unique labels to numeric values
-  label_mapping = {label: index for index, label in enumerate(unique_labels)}
+  #label_mapping = {label: index for index, label in enumerate(unique_labels)}
 
   # Print unique labels
-  print("Unique labels:", unique_labels)
+  #print("Unique labels:", unique_labels)
 
   # Map labels to numeric values
-  df['Label'] = df['Label'].map(label_mapping)
+  #df['Label'] = df['Label'].map(label_mapping)
 
   # Write label mapping to a text file
-  with open(os.path.join(folder_path, 'label_mappings.txt'), 'w') as f:
-      for label, value in label_mapping.items():
-          f.write(f"{label}: {value}\n")
+  # with open(os.path.join(folder_path, 'label_mappings.txt'), 'w') as f:
+  #     for label, value in label_mapping.items():
+  #         f.write(f"{label}: {value}\n")
   
 
+  # if show_plot:
+  #     # Plot the distribution of classes
+  #     plt.bar(df['Label'].unique(), df['Label'].value_counts(), edgecolor='black')
+  #     plt.xticks(list(label_mapping.values()), labels=label_mapping.keys())
+  #     plt.xlabel('Classes')
+  #     plt.ylabel('Count') 
+  #     plt.title('Distribution of Classes')
+  #     plt.savefig(os.path.join(folder_path, "distribution_plot.png"))
+  #     plt.close()
+
   if show_plot:
-      # Plot the distribution of classes
-      plt.bar(df['Label'].unique(), df['Label'].value_counts(), edgecolor='black')
-      plt.xticks(list(label_mapping.values()), labels=label_mapping.keys())
-      plt.xlabel('Classes')
-      plt.ylabel('Count') 
-      plt.title('Distribution of Classes')
-      plt.savefig(os.path.join(folder_path, "distribution_plot.png"))
-      plt.close()
+    # Plot the distribution of classes
+    plt.bar(df['Label'].unique(), df['Label'].value_counts(), edgecolor='black')
+    plt.xticks(df['Label'].unique())  # Set xticks to unique labels
+    plt.xlabel('Classes')
+    plt.ylabel('Count') 
+    plt.title('Distribution of Classes')
+    plt.savefig(os.path.join(folder_path, "distribution_plot.png"))
+    plt.close()
 
   X = df.drop('Label', axis=1)
   y = df['Label']
@@ -67,11 +70,7 @@ def run(input_file: str, output_dir: str, show_plot: bool, existing_model: Optio
   print("The train dataset size = ",X_train.shape)
   print("The test dataset size = ",X_test.shape)
 
-
-  if existing_model is not None and os.path.exists(existing_model):
-      model = continue_training(X_train, y_train, existing_model)
-  else:
-      model = train_model(X_train, y_train)
+  model = train_model(X_train, y_train)
   
   joblib.dump(model, os.path.join(folder_path, 'random_forest_model.pkl'))
 
@@ -90,7 +89,6 @@ def main():
     parser.add_argument('--input', '-I', help='Input CSV file')
     parser.add_argument('--output', '-O', help='Output directory')
     parser.add_argument('--plot', '-P', help='Show distribution of classes', default=False)
-    parser.add_argument('--model', '-M', help='RF model to continue training')
     args = parser.parse_args()
 
     # Check if input and output files are provided
@@ -98,7 +96,7 @@ def main():
         parser.error('Please provide both input and output files.')
 
     # Clean the CSV file
-    run(args.input, args.output, args.plot, args.model)
+    run(args.input, args.output, args.plot)
 
 if __name__ == '__main__':
     main()
