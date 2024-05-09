@@ -164,3 +164,4 @@ MachineLearningCsv/
 datasets/
 random_forest_model.pkl
 *.csv
+output/
