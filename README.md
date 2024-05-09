@@ -5,10 +5,29 @@ This project contains tools to:
 - create_model.py: Train a RandomForestClassifier based on a csv file with features, and store the result in a folder
 - predict.py: Use a model to predict labels from a csv file with features
 
-
-## Getting Started
+## Dataset
 Datasets: https://www.unb.ca/cic/datasets/ids-2017.html
 Helpful Article: https://www.labellerr.com/blog/ddos-attack-detection/amp/
+
+## Hello World example
+1. Download the datasets from the link above
+2. Transfer the datasets to the root of this project
+
+3. Preprocess the data
+```
+python .\preprocess.py -I .\MachineLearningCSV\MachineLearningCVE\Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv -O pcap.csv      
+```
+
+4. Create and train the model (-P true prints a distribution class plot for the labels to the destination folder)
+```
+python .\create_model.py -I .\pcap.csv -O output -P true
+```
+
+5. Use the model to predict on the test data created during training (-L tells the prediction script to include prediction metrics).
+```
+python .\predict.py -M .\output\random_forest_model.pkl -F .\output\X_test.csv -L .\output\y_test.csv 
+```
+
 
 # RandomForestClassifier: A Layman's Explanation - by ChatGpt
 
