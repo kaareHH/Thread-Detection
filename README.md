@@ -9,6 +9,10 @@ This project contains tools to:
 Datasets: https://www.unb.ca/cic/datasets/ids-2017.html
 Helpful Article: https://www.labellerr.com/blog/ddos-attack-detection/amp/
 
+## Good to know
+https://stackoverflow.com/questions/74613826/how-do-i-apply-my-random-forest-classifier-to-an-unlabelled-dataset
+
+
 ## Hello World example
 1. Download the datasets from the link above
 2. Transfer the datasets to the root of this project
