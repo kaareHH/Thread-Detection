@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
-def train_model(X_train, y_train, folder_path):
+def train_model(X_train, y_train):
     rf_model = RandomForestClassifier(n_estimators=50, random_state=42)
     rf_model.fit(X_train, y_train)
     
@@ -68,7 +68,7 @@ def run(input_file: str, output_dir: str, show_plot: bool, existing_model: Optio
   print("The test dataset size = ",X_test.shape)
 
 
-  if os.path.exists(existing_model):
+  if existing_model is not None and os.path.exists(existing_model):
       model = continue_training(X_train, y_train, existing_model)
   else:
       model = train_model(X_train, y_train)
